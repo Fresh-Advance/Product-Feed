@@ -328,6 +328,33 @@ docker compose exec -T php composer clear-cache
 >
 > These contain proprietary OXID code. Only Community Edition (`oxideshop-ce`) and module code in `src/` are safe to read.
 
+### Using the Examples Module as Reference
+
+The development environment automatically installs the **OXID Examples Module** (`oxid-esales/examples-module`) in `vendor/oxid-esales/examples-module/`. This is an excellent resource for learning best practices and implementation patterns.
+
+**What you'll find in the Examples Module**:
+- Real-world examples of OXID module patterns
+- Class extension examples
+- Service configuration patterns
+- Controller implementations
+- Database migrations examples
+- Testing strategies and examples
+- Admin panel integrations
+- Frontend customizations
+
+**How to use it**:
+```bash
+# Browse the examples module code
+cd vendor/oxid-esales/examples-module/
+
+# Read specific implementation files
+# Example: controller patterns, service definitions, metadata configurations
+```
+
+**During development**: When implementing OXID-specific features (like extending shop classes, creating services, or setting up module metadata), refer to the examples module for proven patterns and best practices.
+
+**Important**: The examples module is read-only reference material. Study its patterns but implement your own code in your module's `src/` directory.
+
 ### Quality Tool Configuration
 
 - **PHPStan**: `tests/PhpStan/phpstan.neon`
