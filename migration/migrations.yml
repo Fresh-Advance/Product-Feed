@@ -1,0 +1,4 @@
+table_storage:
+  table_name: oxmigrations_fa_product_feed
+migrations_paths:
+  'FreshAdvance\ProductFeed\Migrations': data
