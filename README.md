@@ -10,7 +10,38 @@
 
 ## Features
 
-@todo: write features list
+Produces the feed of products in the JSON format suitable for various marketing channels.
+
+The example structure of the feed:
+
+```json
+{
+  "products": [
+    {
+      "id": "12345",
+      "brand": "Tea Company",
+      "name": "Organic Earl Grey Tea",
+      "short_description": "Classic black tea with bergamot aroma.",
+      "long_description": "Hand-picked from Sri Lanka’s highlands...",
+      "price": "9.99 EUR",
+      "weight": "100 g",
+      "category": "Black Tea",
+      "image_url": "https://yourshop.com/images/earl-grey.jpg",
+      "url": "https://yourshop.com/products/earl-grey",
+      "availability": "in_stock",
+      "enable_search": true,
+      "last_updated": "2025-11-09T19:00:00Z"
+    }
+  ]
+}
+```
+
+## Limitations
+
+* The current version is producing one feed with all the products, so having large catalog may lead to performance
+  issues.
+    * Please contact us with a request for more performant solutions if needed, it could be implemented in the future
+      versions.
 
 ## Branch compatibility
 
@@ -29,30 +60,36 @@ composer require fresh-advance/product-feed
 
 # Development installation
 
-To be able running the tests and other preconfigured quality tools, please install the module as a [root package](https://getcomposer.org/doc/04-schema.md#root-package).
+To be able running the tests and other preconfigured quality tools, please install the module as
+a [root package](https://getcomposer.org/doc/04-schema.md#root-package).
 
-The next section shows how to install the module as a root package by using the [Fresh Advance Development Base](https://github.com/Fresh-Advance/development).
+The next section shows how to install the module as a root package by using
+the [Fresh Advance Development Base](https://github.com/Fresh-Advance/development).
 
 In case of different environment usage, please adjust by your own needs.
 
 # Development installation on Fresh Advance Development Base
 
-The installation instructions below are shown for the current [Fresh Advance Development Base](https://github.com/Fresh-Advance/development)
+The installation instructions below are shown for the
+current [Fresh Advance Development Base](https://github.com/Fresh-Advance/development)
 for shop 7.4. Make sure your system meets the requirements of the Development Base.
 
 0. Ensure all docker containers are down to avoid port conflicts
 
 1. Clone the SDK for the new project
+
 ```shell
 echo MyProject && git clone https://github.com/Fresh-Advance/development.git $_ && cd $_
 ```
 
 2. Clone the repository to the source directory
+
 ```shell
 git clone --recurse-submodules https://github.com/Fresh-Advance/Product-Feed.git --branch=b-7.4.x ./source
 ```
 
 3. Run the recipe to setup the development environment
+
 ```shell
 ./source/recipes/setup-development.sh
 ```
