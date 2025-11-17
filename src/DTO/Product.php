@@ -12,7 +12,7 @@ namespace FreshAdvance\ProductFeed\DTO;
 final class Product implements ProductInterface
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         private readonly string $productId = '',
