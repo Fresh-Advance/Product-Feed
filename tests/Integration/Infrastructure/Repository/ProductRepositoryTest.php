@@ -27,34 +27,36 @@ final class ProductRepositoryTest extends IntegrationTestCase
     #[Test]
     public function usesFactoryToCreateProducts(): void
     {
-        $article1 = $this->createConfiguredStub(Article::class, ['getId' => 'article_1']);
-        $article2 = $this->createConfiguredStub(Article::class, ['getId' => 'article_2']);
+        $articleIds = [
+            uniqid('test_article_'),
+            uniqid('test_article_'),
+            uniqid('test_article_'),
+        ];
 
-        $articleListSpy = $this->createMock(ArticleList::class);
-        $articleListSpy->expects($this->once())
-            ->method('selectString')
-            ->with($this->stringContains('SELECT * FROM oxv_oxarticles'));
-        $articleListSpy->method('getArray')->willReturn([$article1, $article2]);
-
-        $articleListFactoryMock = $this->createConfiguredStub(
-            ArticleListFactoryInterface::class,
-            ['create' => $articleListSpy]
-        );
+        foreach ($articleIds as $articleId) {
+            $article = oxNew(Article::class);
+            $article->setId($articleId);
+            $article->assign(['oxactive' => 1]);
+            $article->save();
+        }
 
         $productFactorySpy = $this->createMock(ProductFactoryInterface::class);
-        $productFactorySpy->expects($this->exactly(2))
+        $productFactorySpy->expects($this->exactly(3))
             ->method('createFromArticle')
             ->willReturnCallback(fn($article) => $this->createConfiguredStub(
                 ProductInterface::class,
                 ['getProductId' => $article->getId()]
             ));
 
-        $repository = $this->getSut($articleListFactoryMock, $productFactorySpy);
+        $repository = $this->getSut(null, $productFactorySpy);
         $products = $repository->getProducts();
 
-        $this->assertCount(2, $products);
-        $this->assertSame('article_1', $products[0]->getProductId());
-        $this->assertSame('article_2', $products[1]->getProductId());
+        $this->assertGreaterThanOrEqual(3, count($products));
+
+        $productIds = array_map(fn($product) => $product->getProductId(), $products);
+        foreach ($articleIds as $articleId) {
+            $this->assertContains($articleId, $productIds);
+        }
     }
 
     private function getSut(
