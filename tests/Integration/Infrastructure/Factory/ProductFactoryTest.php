@@ -50,7 +50,7 @@ final class ProductFactoryTest extends IntegrationTestCase
 
         $articleStub->method('getPrice')->willReturn($priceStub);
 
-        $factory = $this->getSut($configMock);
+        $factory = $this->getSut(config: $configMock);
         $product = $factory->createFromArticle($articleStub);
 
         $this->assertInstanceOf(ProductInterface::class, $product);
@@ -72,7 +72,7 @@ final class ProductFactoryTest extends IntegrationTestCase
     private function getSut(?Config $config = null): ProductFactoryInterface
     {
         return new ProductFactory(
-            $config ?? $this->get(Config::class)
+            config: $config ?? $this->get(Config::class)
         );
     }
 }

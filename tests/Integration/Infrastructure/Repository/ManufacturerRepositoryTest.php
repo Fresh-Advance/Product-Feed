@@ -37,7 +37,9 @@ final class ManufacturerRepositoryTest extends IntegrationTestCase
             ['create' => $manufacturerSpy]
         );
 
-        $repository = $this->getSut($factoryStub);
+        $repository = $this->getSut(
+            manufacturerModelFactory: $factoryStub
+        );
         $title = $repository->getManufacturerTitleById($manufacturerId);
 
         $this->assertSame($manufacturerTitle, $title);
@@ -47,7 +49,7 @@ final class ManufacturerRepositoryTest extends IntegrationTestCase
         ?ManufacturerModelFactoryInterface $manufacturerModelFactory = null
     ): ManufacturerRepositoryInterface {
         return new ManufacturerRepository(
-            $manufacturerModelFactory ?? $this->get(ManufacturerModelFactoryInterface::class)
+            manufacturerFactory: $manufacturerModelFactory ?? $this->get(ManufacturerModelFactoryInterface::class)
         );
     }
 }

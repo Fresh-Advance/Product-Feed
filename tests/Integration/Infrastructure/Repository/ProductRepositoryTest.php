@@ -48,7 +48,9 @@ final class ProductRepositoryTest extends IntegrationTestCase
                 ['getProductId' => $article->getId()]
             ));
 
-        $repository = $this->getSut(null, $productFactorySpy);
+        $repository = $this->getSut(
+            productFactory: $productFactorySpy
+        );
         $products = $repository->getProducts();
 
         $this->assertGreaterThanOrEqual(3, count($products));
@@ -64,11 +66,11 @@ final class ProductRepositoryTest extends IntegrationTestCase
         ?ProductFactoryInterface $productFactory = null
     ): ProductRepositoryInterface {
         return new ProductRepository(
-            $this->get(ContextInterface::class),
-            $this->get(Language::class),
-            $this->get(ShopAdapterInterface::class),
-            $articleListFactory ?? $this->get(ArticleListFactoryInterface::class),
-            $productFactory ?? $this->get(ProductFactoryInterface::class)
+            context: $this->get(ContextInterface::class),
+            language: $this->get(Language::class),
+            shopAdapter: $this->get(ShopAdapterInterface::class),
+            articleListFactory: $articleListFactory ?? $this->get(ArticleListFactoryInterface::class),
+            productFactory: $productFactory ?? $this->get(ProductFactoryInterface::class)
         );
     }
 }
