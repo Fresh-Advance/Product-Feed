@@ -1,3 +1,7 @@
+imports:
+  - { resource: src/Infrastructure/services.yaml }
+  - { resource: src/Transformer/services.yaml }
+
 services:
 
   _defaults:
