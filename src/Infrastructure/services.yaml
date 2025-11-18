@@ -1,0 +1,30 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Language: ['@FreshAdvance\ProductFeed\Infrastructure\Registry', 'getLang']
+      OxidEsales\Eshop\Core\Config: ['@FreshAdvance\ProductFeed\Infrastructure\Registry', 'getConfig']
+
+  FreshAdvance\ProductFeed\Infrastructure\Registry:
+    class: OxidEsales\Eshop\Core\Registry
+    public: true
+
+  FreshAdvance\ProductFeed\Infrastructure\Factory\ArticleListFactoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Factory\ArticleListFactory
+
+  FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactory
+
+  FreshAdvance\ProductFeed\Infrastructure\Factory\ManufacturerModelFactoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Factory\ManufacturerModelFactory
+
+  FreshAdvance\ProductFeed\Infrastructure\Factory\CategoryModelFactoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Factory\CategoryModelFactory
+
+  FreshAdvance\ProductFeed\Infrastructure\Repository\ProductRepositoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Repository\ProductRepository
+
+  FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepository
