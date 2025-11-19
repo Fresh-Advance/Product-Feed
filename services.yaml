@@ -2,9 +2,16 @@ imports:
   - { resource: src/Infrastructure/services.yaml }
   - { resource: src/Transformer/services.yaml }
   - { resource: src/Service/services.yaml }
+  - { resource: src/Transput/services.yaml }
 
 services:
 
   _defaults:
     public: false
     autowire: true
+
+  productsFeed:
+    class: FreshAdvance\ProductFeed\Controller\ProductsFeedController
+    public: true
+    tags:
+      - { name: 'oxid.view_controller', controller_key: 'fapf_list_products' }

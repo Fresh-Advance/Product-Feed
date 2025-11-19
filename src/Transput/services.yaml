@@ -1,0 +1,10 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Utils: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").getUtils()'
+
+  FreshAdvance\ProductFeed\Transput\ResponseInterface:
+    class: FreshAdvance\ProductFeed\Transput\Response
