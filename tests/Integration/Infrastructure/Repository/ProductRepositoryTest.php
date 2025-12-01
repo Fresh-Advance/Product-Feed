@@ -15,7 +15,7 @@ use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactoryInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ProductRepository;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ProductRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
-use OxidEsales\Eshop\Application\Model\ArticleList;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Language;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
@@ -24,6 +24,14 @@ use PHPUnit\Framework\Attributes\Test;
 
 final class ProductRepositoryTest extends IntegrationTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $database = DatabaseProvider::getDb();
+        $database->execute("DELETE FROM oxarticles");
+    }
+
     #[Test]
     public function usesFactoryToCreateProducts(): void
     {
@@ -65,12 +73,15 @@ final class ProductRepositoryTest extends IntegrationTestCase
         ?ArticleListFactoryInterface $articleListFactory = null,
         ?ProductFactoryInterface $productFactory = null
     ): ProductRepositoryInterface {
+        $articleListFactory ??= $this->get(ArticleListFactoryInterface::class);
+        $productFactory ??= $this->get(ProductFactoryInterface::class);
+
         return new ProductRepository(
             context: $this->get(ContextInterface::class),
             language: $this->get(Language::class),
             shopAdapter: $this->get(ShopAdapterInterface::class),
-            articleListFactory: $articleListFactory ?? $this->get(ArticleListFactoryInterface::class),
-            productFactory: $productFactory ?? $this->get(ProductFactoryInterface::class)
+            articleListFactory: $articleListFactory,
+            productFactory: $productFactory
         );
     }
 }

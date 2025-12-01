@@ -11,13 +11,15 @@ namespace FreshAdvance\ProductFeed\Infrastructure\Factory;
 
 use FreshAdvance\ProductFeed\DTO\Product;
 use FreshAdvance\ProductFeed\DTO\ProductInterface;
+use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Config;
 
 class ProductFactory implements ProductFactoryInterface
 {
     public function __construct(
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly ManufacturerRepositoryInterface $manufacturerRepository,
     ) {
     }
 
@@ -29,7 +31,7 @@ class ProductFactory implements ProductFactoryInterface
         return new Product(
             productId: (string)$article->getId(),
             name: (string)$article->getFieldData('oxtitle'),
-            brand: (string)$article->getFieldData('oxmanufacturerid'),
+            brand: $this->getManufacturerTitle($article),
             shortDescription: (string)$article->getFieldData('oxshortdesc'),
             longDescription: (string)$longDescField,
             price: $this->getFormattedPrice($article),
@@ -56,5 +58,18 @@ class ProductFactory implements ProductFactoryInterface
     private function getFormattedWeight(Article $article): string
     {
         return $article->getFieldData('oxweight') ? $article->getFieldData('oxweight') . ' kg.' : '';
+    }
+
+    public function getManufacturerTitle(Article $article): string
+    {
+        $result = '';
+
+        if ($article->getFieldData('oxmanufacturerid')) {
+            $result = $this->manufacturerRepository->getManufacturerTitleById(
+                $article->getFieldData('oxmanufacturerid')
+            );
+        }
+
+        return $result;
     }
 }

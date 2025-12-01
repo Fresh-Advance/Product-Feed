@@ -12,6 +12,7 @@ namespace FreshAdvance\ProductFeed\Tests\Integration\Infrastructure\Factory;
 use FreshAdvance\ProductFeed\DTO\ProductInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactory;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactoryInterface;
+use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Field;
@@ -29,11 +30,17 @@ final class ProductFactoryTest extends IntegrationTestCase
         $configMock = $this->createStub(Config::class);
         $configMock->method('getActShopCurrencyObject')->willReturn($currencyStub);
 
+        $manufacturerRepositorySpy = $this->createMock(ManufacturerRepositoryInterface::class);
+        $manufacturerRepositorySpy->expects($this->once())
+            ->method('getManufacturerTitleById')
+            ->with($brandId = uniqid('brandId_'))
+            ->willReturn($brandTitle = uniqid('brandTitle_'));
+
         $articleStub = $this->createStub(Article::class);
         $articleStub->method('getId')->willReturn($exampleId = uniqid('id'));
         $articleStub->method('getFieldData')->willReturnMap([
             ['oxtitle', $exampleTitle = uniqid('title')],
-            ['oxmanufacturerid', $brandId = uniqid('brandId')],
+            ['oxmanufacturerid', $brandId],
             ['oxshortdesc', $shortDescription = uniqid('shortDesc')],
             ['oxweight', $weight = (string)round(rand(0, 100) / 10, 3)],
             ['oxstock', rand(1, 100)],
@@ -57,13 +64,16 @@ final class ProductFactoryTest extends IntegrationTestCase
 
         $articleStub->method('getPrice')->willReturn($priceStub);
 
-        $factory = $this->getSut(config: $configMock);
+        $factory = $this->getSut(
+            config: $configMock,
+            manufacturerRepository: $manufacturerRepositorySpy,
+        );
         $product = $factory->createFromArticle($articleStub);
 
         $this->assertInstanceOf(ProductInterface::class, $product);
         $this->assertSame($exampleId, $product->getProductId());
         $this->assertSame($exampleTitle, $product->getName());
-        $this->assertSame($brandId, $product->getBrand());
+        $this->assertSame($brandTitle, $product->getBrand());
         $this->assertSame($shortDescription, $product->getShortDescription());
         $this->assertSame($longDescription, $product->getLongDescription());
         $this->assertSame($bruttoPrice . ' EUR', $product->getPrice());
@@ -111,10 +121,36 @@ final class ProductFactoryTest extends IntegrationTestCase
         $this->assertSame('', $product->getUpdatedTime());
     }
 
-    private function getSut(?Config $config = null): ProductFactoryInterface
+    #[Test]
+    public function doesntTriggerManufacturerLoadingIfNoManufacturerId(): void
     {
+        $manufacturerRepositorySpy = $this->createMock(ManufacturerRepositoryInterface::class);
+        $manufacturerRepositorySpy->expects($this->never())->method('getManufacturerTitleById');
+
+        $articleStub = $this->createStub(Article::class);
+
+        $articleStub->method('getThumbnailUrl')->willReturn(uniqid('picture_'));
+        $articleStub->method('getLink')->willReturn(uniqid('link_'));
+        $articleStub->method('getCategoryIds')->willReturn([]);
+
+        $articleStub->method('getFieldData')->willReturnMap([
+            ['oxmanufacturerid', ''],
+        ]);
+
+        $factory = $this->getSut(
+            manufacturerRepository: $manufacturerRepositorySpy,
+        );
+
+        $factory->createFromArticle($articleStub);
+    }
+
+    private function getSut(
+        ?Config $config = null,
+        ?ManufacturerRepositoryInterface $manufacturerRepository = null,
+    ): ProductFactoryInterface {
         return new ProductFactory(
-            config: $config ?? $this->get(Config::class)
+            config: $config ?? $this->get(Config::class),
+            manufacturerRepository: $manufacturerRepository ?? $this->get(ManufacturerRepositoryInterface::class),
         );
     }
 }

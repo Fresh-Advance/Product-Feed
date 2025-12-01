@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace FreshAdvance\ProductFeed\Tests\Integration\Infrastructure\Repository;
 
+use FreshAdvance\ProductFeed\Infrastructure\Exception\ManufacturerNotFound;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ManufacturerModelFactoryInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepository;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface;
@@ -27,7 +28,8 @@ final class ManufacturerRepositoryTest extends IntegrationTestCase
         $manufacturerSpy = $this->createMock(Manufacturer::class);
         $manufacturerSpy->expects($this->once())
             ->method('load')
-            ->with($manufacturerId);
+            ->with($manufacturerId)
+            ->willReturn(true);
         $manufacturerSpy->method('getFieldData')
             ->with('oxtitle')
             ->willReturn($manufacturerTitle);
@@ -45,11 +47,36 @@ final class ManufacturerRepositoryTest extends IntegrationTestCase
         $this->assertSame($manufacturerTitle, $title);
     }
 
+    #[Test]
+    public function throwsExceptionWhenManufacturerNotFound(): void
+    {
+        $nonExistentId = uniqid('nonexistent_');
+
+        $manufacturerSpy = $this->createMock(Manufacturer::class);
+        $manufacturerSpy->method('load')
+            ->with($nonExistentId)
+            ->willReturn(false);
+
+        $factoryStub = $this->createConfiguredStub(
+            ManufacturerModelFactoryInterface::class,
+            ['create' => $manufacturerSpy]
+        );
+
+        $repository = $this->getSut(
+            manufacturerModelFactory: $factoryStub
+        );
+
+        $this->expectException(ManufacturerNotFound::class);
+        $repository->getManufacturerTitleById($nonExistentId);
+    }
+
     private function getSut(
         ?ManufacturerModelFactoryInterface $manufacturerModelFactory = null
     ): ManufacturerRepositoryInterface {
+        $manufacturerModelFactory ??= $this->createStub(ManufacturerModelFactoryInterface::class);
+
         return new ManufacturerRepository(
-            manufacturerFactory: $manufacturerModelFactory ?? $this->get(ManufacturerModelFactoryInterface::class)
+            manufacturerFactory: $manufacturerModelFactory,
         );
     }
 }
