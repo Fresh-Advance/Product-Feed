@@ -88,7 +88,7 @@ final class ProductFactoryTest extends IntegrationTestCase
         $articleStub = $this->createStub(Article::class);
         $articleStub->method('getThumbnailUrl')->willReturn('');
         $articleStub->method('getLink')->willReturn('');
-        $articleStub->method('getCategoryIds')->willReturn([]);  // no categories
+        $articleStub->method('getCategoryIds')->willReturn([]);
 
         $articleStub->method('getPrice')->willReturn(null);
 

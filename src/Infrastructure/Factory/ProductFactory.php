@@ -23,12 +23,15 @@ class ProductFactory implements ProductFactoryInterface
 
     public function createFromArticle(Article $article): ProductInterface
     {
+        /** @var \OxidEsales\Eshop\Core\Field|null $longDescField */
+        $longDescField = $article->getLongDescription();
+
         return new Product(
             productId: (string)$article->getId(),
             name: (string)$article->getFieldData('oxtitle'),
             brand: (string)$article->getFieldData('oxmanufacturerid'),
             shortDescription: (string)$article->getFieldData('oxshortdesc'),
-            longDescription: (string)$article->getLongDescription(),
+            longDescription: (string)$longDescField,
             price: $this->getFormattedPrice($article),
             weight: $this->getFormattedWeight($article),
             category: $article->getCategoryIds()[0] ?? '',
@@ -42,6 +45,7 @@ class ProductFactory implements ProductFactoryInterface
 
     private function getFormattedPrice(Article $article): string
     {
+        /** @var \OxidEsales\Eshop\Core\Price|null $price */
         $price = $article->getPrice();
         $currency = $this->config->getActShopCurrencyObject();
         $formattedPrice = $price ? $price->getBruttoPrice() . ' ' . $currency->name : '';
