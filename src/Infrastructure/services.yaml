@@ -4,8 +4,8 @@ services:
     public: false
     autowire: true
     bind:
-      OxidEsales\Eshop\Core\Language: ['@FreshAdvance\ProductFeed\Infrastructure\Registry', 'getLang']
-      OxidEsales\Eshop\Core\Config: ['@FreshAdvance\ProductFeed\Infrastructure\Registry', 'getConfig']
+      OxidEsales\Eshop\Core\Language: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").getLang()'
+      OxidEsales\Eshop\Core\Config: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").getConfig()'
 
   FreshAdvance\ProductFeed\Infrastructure\Registry:
     class: OxidEsales\Eshop\Core\Registry

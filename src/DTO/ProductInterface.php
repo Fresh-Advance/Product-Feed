@@ -9,6 +9,9 @@ namespace FreshAdvance\ProductFeed\DTO;
 
 interface ProductInterface
 {
+    public const AVAILABILITY_IN_STOCK = 'in_stock';
+    public const AVAILABILITY_OUT_OF_STOCK = 'out_of_stock';
+
     public function getProductId(): string;
 
     public function getName(): string;
