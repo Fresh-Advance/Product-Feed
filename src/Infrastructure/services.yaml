@@ -28,3 +28,6 @@ services:
 
   FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface:
     class: FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepository
+
+  FreshAdvance\ProductFeed\Infrastructure\Repository\CategoryRepositoryInterface:
+    class: FreshAdvance\ProductFeed\Infrastructure\Repository\CategoryRepository

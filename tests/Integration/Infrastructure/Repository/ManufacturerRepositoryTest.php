@@ -53,6 +53,7 @@ final class ManufacturerRepositoryTest extends IntegrationTestCase
         $nonExistentId = uniqid('nonexistent_');
 
         $manufacturerSpy = $this->createMock(Manufacturer::class);
+        $manufacturerSpy->expects($this->never())->method('getFieldData');
         $manufacturerSpy->method('load')
             ->with($nonExistentId)
             ->willReturn(false);
