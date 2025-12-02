@@ -311,6 +311,19 @@ docker compose exec -T php composer clear-cache
 - Define services with autowiring enabled by default
 - Public: false by default
 - Access via container in controllers/services
+- **IMPORTANT**: Never use resource-based service auto-configuration (e.g., `resource: 'src/*'`)
+- Always register services explicitly when needed
+- Example:
+  ```yaml
+  services:
+    _defaults:
+      public: false
+      autowire: true
+
+    # Explicit service registration
+    Vendor\Module\Service\SomeService:
+      autowire: true
+  ```
 
 **Class Extension**:
 - Use `extend` in metadata.php to extend shop classes
@@ -399,6 +412,7 @@ cd vendor/oxid-esales/examples-module/
 - **Codeception tests**: Validate frontend behavior, use HTML ids for selectors
 - Aim for high coverage on business logic (unit tests)
 - Use Codeception sparingly (slower, but catches frontend issues)
+- As much as possible in tests use random values, for string it can be uniqid for example
 
 ### Codeception Tests
 - Add `id` attributes to HTML elements for reliable selection
