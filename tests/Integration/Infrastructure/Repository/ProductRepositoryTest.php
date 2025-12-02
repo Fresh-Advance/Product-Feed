@@ -17,7 +17,7 @@ use FreshAdvance\ProductFeed\Infrastructure\Repository\ProductRepositoryInterfac
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Language;
-use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -79,7 +79,7 @@ final class ProductRepositoryTest extends IntegrationTestCase
         return new ProductRepository(
             context: $this->get(ContextInterface::class),
             language: $this->get(Language::class),
-            shopAdapter: $this->get(ShopAdapterInterface::class),
+            tableViewNameGenerator: oxNew(TableViewNameGenerator::class),
             articleListFactory: $articleListFactory,
             productFactory: $productFactory
         );

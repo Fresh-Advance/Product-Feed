@@ -12,7 +12,7 @@ namespace FreshAdvance\ProductFeed\Infrastructure\Repository;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ArticleListFactoryInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactoryInterface;
 use OxidEsales\Eshop\Core\Language;
-use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 
 class ProductRepository implements ProductRepositoryInterface
@@ -20,7 +20,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function __construct(
         private readonly ContextInterface $context,
         private readonly Language $language,
-        private readonly ShopAdapterInterface $shopAdapter,
+        private readonly TableViewNameGenerator $tableViewNameGenerator,
         private readonly ArticleListFactoryInterface $articleListFactory,
         private readonly ProductFactoryInterface $productFactory
     ) {
@@ -48,6 +48,6 @@ class ProductRepository implements ProductRepositoryInterface
         $shopId = $this->context->getCurrentShopId();
         $languageId = (int)$this->language->getBaseLanguage();
 
-        return $this->shopAdapter->generateDatabaseViewName('oxarticles', $languageId, $shopId);
+        return $this->tableViewNameGenerator->getViewName('oxarticles', $languageId, $shopId);
     }
 }

@@ -6,6 +6,7 @@ services:
     bind:
       OxidEsales\Eshop\Core\Language: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").getLang()'
       OxidEsales\Eshop\Core\Config: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").getConfig()'
+      OxidEsales\Eshop\Core\TableViewNameGenerator: '@=service("FreshAdvance\\ProductFeed\\Infrastructure\\Registry").get("OxidEsales\\Eshop\\Core\\TableViewNameGenerator")'
 
   FreshAdvance\ProductFeed\Infrastructure\Registry:
     class: OxidEsales\Eshop\Core\Registry
