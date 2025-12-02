@@ -1,6 +1,6 @@
 # Product Feed module for OXID eShop
 
-[![Development](https://github.com/Fresh-Advance/Product-Feed/actions/workflows/trigger.yaml/badge.svg?branch=b-7.4.x)](https://github.com/Fresh-Advance/Product-Feed/actions/workflows/trigger.yaml)
+[![Development](https://github.com/Fresh-Advance/Product-Feed/actions/workflows/trigger.yaml/badge.svg?branch=b-7.3.x)](https://github.com/Fresh-Advance/Product-Feed/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/fresh-advance/product-feed?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/fresh-advance/product-feed)
 [![PHP Version](https://img.shields.io/packagist/php-v/fresh-advance/product-feed)](https://github.com/Fresh-Advance/Product-Feed)
 
@@ -46,6 +46,7 @@ The example structure of the feed:
 ## Branch compatibility
 
 * Branch **b-7.4.x** is compatible with OXID Shop compilation **7.4.0 and up**
+* Branch **b-7.3.x** is compatible with OXID Shop compilation **7.3.0 and up**
 
 Note: Not all latest features are available in the older branches.
 
@@ -85,7 +86,7 @@ echo MyProject && git clone https://github.com/Fresh-Advance/development.git $_ 
 2. Clone the repository to the source directory
 
 ```shell
-git clone --recurse-submodules https://github.com/Fresh-Advance/Product-Feed.git --branch=b-7.4.x ./source
+git clone --recurse-submodules https://github.com/Fresh-Advance/Product-Feed.git --branch=b-7.3.x ./source
 ```
 
 3. Run the recipe to setup the development environment
