@@ -12,6 +12,7 @@ namespace FreshAdvance\ProductFeed\Tests\Integration\Infrastructure\Factory;
 use FreshAdvance\ProductFeed\DTO\ProductInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactory;
 use FreshAdvance\ProductFeed\Infrastructure\Factory\ProductFactoryInterface;
+use FreshAdvance\ProductFeed\Infrastructure\Repository\CategoryRepositoryInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Config;
@@ -36,6 +37,12 @@ final class ProductFactoryTest extends IntegrationTestCase
             ->with($brandId = uniqid('brandId_'))
             ->willReturn($brandTitle = uniqid('brandTitle_'));
 
+        $categoryRepositorySpy = $this->createMock(CategoryRepositoryInterface::class);
+        $categoryRepositorySpy->expects($this->once())
+            ->method('getCategoryTitleById')
+            ->with($categoryId = uniqid('categoryId_'))
+            ->willReturn($categoryTitle = uniqid('categoryTitle_'));
+
         $articleStub = $this->createStub(Article::class);
         $articleStub->method('getId')->willReturn($exampleId = uniqid('id'));
         $articleStub->method('getFieldData')->willReturnMap([
@@ -55,7 +62,7 @@ final class ProductFactoryTest extends IntegrationTestCase
         $articleStub->method('getThumbnailUrl')->willReturn($picture = uniqid('picture'));
         $articleStub->method('getLink')->willReturn($link = uniqid('link'));
         $articleStub->method('getCategoryIds')->willReturn(
-            [$categoryId = uniqid('categoryId1'), uniqid('categoryId2')]
+            [$categoryId, uniqid('categoryId2')]
         );
 
         $priceStub = $this->createConfiguredStub(\OxidEsales\Eshop\Core\Price::class, [
@@ -67,6 +74,7 @@ final class ProductFactoryTest extends IntegrationTestCase
         $factory = $this->getSut(
             config: $configMock,
             manufacturerRepository: $manufacturerRepositorySpy,
+            categoryRepository: $categoryRepositorySpy,
         );
         $product = $factory->createFromArticle($articleStub);
 
@@ -78,7 +86,7 @@ final class ProductFactoryTest extends IntegrationTestCase
         $this->assertSame($longDescription, $product->getLongDescription());
         $this->assertSame($bruttoPrice . ' EUR', $product->getPrice());
         $this->assertSame($weight . ' kg.', $product->getWeight());
-        $this->assertSame($categoryId, $product->getCategory());
+        $this->assertSame($categoryTitle, $product->getCategory());
         $this->assertSame($picture, $product->getImageUrl());
         $this->assertSame($link, $product->getUrl());
         $this->assertSame(ProductInterface::AVAILABILITY_IN_STOCK, $product->getAvailability());
@@ -144,13 +152,34 @@ final class ProductFactoryTest extends IntegrationTestCase
         $factory->createFromArticle($articleStub);
     }
 
+    #[Test]
+    public function doesntTriggerCategoryLoadingIfNoCategoryIds(): void
+    {
+        $categoryRepositorySpy = $this->createMock(CategoryRepositoryInterface::class);
+        $categoryRepositorySpy->expects($this->never())->method('getCategoryTitleById');
+
+        $articleStub = $this->createStub(Article::class);
+
+        $articleStub->method('getThumbnailUrl')->willReturn(uniqid('picture_'));
+        $articleStub->method('getLink')->willReturn(uniqid('link_'));
+        $articleStub->method('getCategoryIds')->willReturn([]);
+
+        $factory = $this->getSut(
+            categoryRepository: $categoryRepositorySpy,
+        );
+
+        $factory->createFromArticle($articleStub);
+    }
+
     private function getSut(
         ?Config $config = null,
         ?ManufacturerRepositoryInterface $manufacturerRepository = null,
+        ?CategoryRepositoryInterface $categoryRepository = null,
     ): ProductFactoryInterface {
         return new ProductFactory(
             config: $config ?? $this->get(Config::class),
             manufacturerRepository: $manufacturerRepository ?? $this->get(ManufacturerRepositoryInterface::class),
+            categoryRepository: $categoryRepository ?? $this->get(CategoryRepositoryInterface::class),
         );
     }
 }

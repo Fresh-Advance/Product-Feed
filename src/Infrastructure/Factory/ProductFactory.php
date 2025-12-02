@@ -11,6 +11,7 @@ namespace FreshAdvance\ProductFeed\Infrastructure\Factory;
 
 use FreshAdvance\ProductFeed\DTO\Product;
 use FreshAdvance\ProductFeed\DTO\ProductInterface;
+use FreshAdvance\ProductFeed\Infrastructure\Repository\CategoryRepositoryInterface;
 use FreshAdvance\ProductFeed\Infrastructure\Repository\ManufacturerRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Config;
@@ -20,6 +21,7 @@ class ProductFactory implements ProductFactoryInterface
     public function __construct(
         private readonly Config $config,
         private readonly ManufacturerRepositoryInterface $manufacturerRepository,
+        private readonly CategoryRepositoryInterface $categoryRepository,
     ) {
     }
 
@@ -36,7 +38,7 @@ class ProductFactory implements ProductFactoryInterface
             longDescription: (string)$longDescField,
             price: $this->getFormattedPrice($article),
             weight: $this->getFormattedWeight($article),
-            category: $article->getCategoryIds()[0] ?? '',
+            category: $this->getCategoryTitle($article),
             imageUrl: $article->getThumbnailUrl(),
             url: $article->getLink(),
             availability: $article->getFieldData('oxstock') > 0 ? 'in_stock' : 'out_of_stock',
@@ -60,14 +62,24 @@ class ProductFactory implements ProductFactoryInterface
         return $article->getFieldData('oxweight') ? $article->getFieldData('oxweight') . ' kg.' : '';
     }
 
-    public function getManufacturerTitle(Article $article): string
+    private function getManufacturerTitle(Article $article): string
     {
         $result = '';
 
-        if ($article->getFieldData('oxmanufacturerid')) {
-            $result = $this->manufacturerRepository->getManufacturerTitleById(
-                $article->getFieldData('oxmanufacturerid')
-            );
+        if ($manufacturerId = $article->getFieldData('oxmanufacturerid')) {
+            $result = $this->manufacturerRepository->getManufacturerTitleById($manufacturerId);
+        }
+
+        return $result;
+    }
+
+    private function getCategoryTitle(Article $article): string
+    {
+        $result = '';
+        $categories = $article->getCategoryIds();
+
+        if ($categoryId = reset($categories)) {
+            $result = $this->categoryRepository->getCategoryTitleById($categoryId);
         }
 
         return $result;
