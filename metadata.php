@@ -21,6 +21,6 @@ $aModule = [
     'version' => '1.0.0',
     'author' => 'MB Arbatos Klubas',
     'url' => 'https://github.com/Fresh-Advance/Product-Feed',
-    'email' => 'info@fresh-advance.eu',
+    'email' => 'info@freshadvance.eu',
     'extend' => [],
 ];

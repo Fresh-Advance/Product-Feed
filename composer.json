@@ -1,6 +1,6 @@
 {
     "name": "fresh-advance/product-feed",
-    "description": "Module Template – Clean Skeleton for OXID Modules",
+    "description": "Product Feed API for OXID eShop",
     "type": "oxideshop-module",
     "keywords": [
         "oxid",

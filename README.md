@@ -45,10 +45,12 @@ The example structure of the feed:
 
 ## Branch compatibility
 
-* Branch **b-7.4.x** is compatible with OXID Shop compilation **7.4.0 and up**
-* Branch **b-7.3.x** is compatible with OXID Shop compilation **7.3.0 and up**
+* Branch **b-7.4.x** is compatible with OXID Shop compilation **7.4.x**
+* Branch **b-7.3.x** is compatible with OXID Shop compilation **7.3.x - 7.4.x**
 
-Note: Not all latest features are available in the older branches.
+## Version compatibility
+
+* Version **v1.0.0** is compatible with OXID Shop compilation **7.3.x - 7.4.x**
 
 ## Installation
 
