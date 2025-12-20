@@ -57,4 +57,4 @@ sonarcloud:
     -Dsonar.tests=tests
 
 finish:
-  slack_title: 'Module template ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'
+  slack_title: 'Product Feed ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'

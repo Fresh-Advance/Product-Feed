@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Long description field is now rendered through template engine to process twig syntax
 
+### Removed
+- Cleanup of module template leftovers
+
 ## [v1.0.0] - 2025-12-07
 
 ### Added

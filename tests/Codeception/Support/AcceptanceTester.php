@@ -15,7 +15,6 @@ use OxidEsales\Codeception\Admin\AdminPanel;
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\Facts\Facts;
-use FreshAdvance\ProductFeed\Settings\Service\ModuleSettingsServiceInterface;
 
 /**
  * Inherited Methods
@@ -39,32 +38,13 @@ final class AcceptanceTester extends \Codeception\Actor
 
     use \Codeception\Lib\Actor\Shared\Retry;
 
-    /**
-     * Open shop first page.
-     */
     public function openShop(): Home
     {
-        $I        = $this;
+        $I = $this;
         $homePage = new Home($I);
         $I->amOnPage($homePage->URL);
 
         return $homePage;
-    }
-
-    public function setGreetingModePersonal(): void
-    {
-        $I = $this;
-
-        $I->getServiceFromContainer(ModuleSettingsServiceInterface::class)
-            ->saveGreetingMode(ModuleSettingsServiceInterface::GREETING_MODE_PERSONAL);
-    }
-
-    public function setGreetingModeGeneric(): void
-    {
-        $I = $this;
-
-        $I->getServiceFromContainer(ModuleSettingsServiceInterface::class)
-            ->saveGreetingMode(ModuleSettingsServiceInterface::GREETING_MODE_GENERIC);
     }
 
     public function getDemoUserName(): string
@@ -75,15 +55,6 @@ final class AcceptanceTester extends \Codeception\Actor
     public function getDemoUserPassword(): string
     {
         return Fixtures::get('user')['password'];
-    }
-
-    public function resetGreetingTracker(): void
-    {
-        $this->updateInDatabase(
-            'oemt_tracker',
-            ['oemtcount' => 0],
-            []
-        );
     }
 
     public function getShopUrl(): string
