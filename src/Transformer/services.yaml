@@ -6,3 +6,6 @@ services:
 
   FreshAdvance\ProductFeed\Transformer\ProductToArrayTransformerInterface:
     class: FreshAdvance\ProductFeed\Transformer\ProductToArrayTransformer
+
+  FreshAdvance\ProductFeed\Transformer\ProductToArrayFieldsRenderingDecorator:
+    decorates: FreshAdvance\ProductFeed\Transformer\ProductToArrayTransformerInterface

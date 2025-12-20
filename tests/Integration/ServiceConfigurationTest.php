@@ -9,18 +9,26 @@ declare(strict_types=1);
 
 namespace FreshAdvance\ProductFeed\Tests\Integration;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
-use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 class ServiceConfigurationTest extends IntegrationTestCase
 {
-    public static $cachedContainer;
+    private static $cachedContainer;
+    private static $decorations = [];
 
     public static function setUpBeforeClass(): void
     {
-        $container = (new TestContainerFactory())->create();
+        $containerBuilder = (new ContainerBuilderFactory())->create();
+        $container = $containerBuilder->getContainer();
+        foreach ($container->getDefinitions() as $id => $definition) {
+            $definition->setPublic(true);
+            if ($decorated = $definition->getDecoratedService()) {
+                self::$decorations[reset($decorated)][] = $id;
+            }
+        }
         $container->compile(true);
         self::$cachedContainer = $container;
     }
@@ -54,5 +62,25 @@ class ServiceConfigurationTest extends IntegrationTestCase
     {
         $service = self::$cachedContainer->get($serviceName);
         $this->assertInstanceOf($serviceName, $service);
+    }
+
+    public static function serviceDecorationProvider(): \Generator
+    {
+        yield [
+            'serviceName' => \FreshAdvance\ProductFeed\Transformer\ProductToArrayTransformerInterface::class,
+            'expectedDecorations' => [
+                \FreshAdvance\ProductFeed\Transformer\ProductToArrayFieldsRenderingDecorator::class,
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('serviceDecorationProvider')]
+    public function serviceIsDecorated(string $serviceName, array $expectedDecorations): void
+    {
+        $decorations = self::$decorations[$serviceName] ?? [];
+        foreach ($expectedDecorations as $oneExpectedDecoration) {
+            $this->assertContains($oneExpectedDecoration, $decorations);
+        }
     }
 }
